@@ -10,10 +10,14 @@ import io.flutter.plugin.common.MethodChannel
 import java.io.File
 
 class MainActivity: FlutterActivity() {
+    private lateinit var samsungIapHandler: SamsungIapHandler
     private val CHANNEL = "com.zdmgold.katharscan/downloads"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        samsungIapHandler = SamsungIapHandler(this)
+        samsungIapHandler.setup(flutterEngine)
+
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "saveToDownloads") {
                 val bytes = call.argument<ByteArray>("bytes")
@@ -34,6 +38,13 @@ class MainActivity: FlutterActivity() {
             } else {
                 result.notImplemented()
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (::samsungIapHandler.isInitialized) {
+            samsungIapHandler.handleActivityResult(requestCode, resultCode, data)
         }
     }
 
