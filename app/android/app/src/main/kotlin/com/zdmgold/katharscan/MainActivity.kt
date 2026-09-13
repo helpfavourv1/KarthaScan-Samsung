@@ -1,5 +1,6 @@
 package com.zdmgold.katharscan
 
+import android.content.Intent
 import android.content.ContentValues
 import android.os.Build
 import android.os.Environment
